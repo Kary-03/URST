@@ -611,7 +611,7 @@ class RayPPOTrainer:
             filtered_gts = [val_gt_upper[idx] for idx in valid_indices]
             filtered_preds = [val_pred_upper[idx] for idx in valid_indices]
             val_accuracy = accuracy_score(filtered_gts, filtered_preds)
-            val_f1 = f1_score(filtered_gts, filtered_preds, average="weighted", labels=["YES", "NO"])
+            val_f1 = f1_score(filtered_gts, filtered_preds, average="macro", labels=["YES", "NO"])
         else:
             val_accuracy = 0.0
             val_f1 = 0.0
@@ -1452,11 +1452,11 @@ class RayPPOTrainer:
             filtered_preds = [predictions[i] for i in valid_indices]
             
             acc = accuracy_score(filtered_gts, filtered_preds)
-            f1 = f1_score(filtered_gts, filtered_preds, average="weighted", labels=["YES", "NO"])
+            f1 = f1_score(filtered_gts, filtered_preds, average="macro", labels=["YES", "NO"])
             
             all_results[file_name] = {
                 "accuracy": acc,
-                "f1_score_weighted": f1,
+                "f1_score": f1,
                 "total_samples": len(ground_truths),
                 "valid_samples": len(filtered_gts),
                 "unknown_predictions": len(predictions) - len(valid_indices)
@@ -1475,7 +1475,7 @@ class RayPPOTrainer:
             avg_f1 = np.mean(all_f1)
             all_results["average"] = {
                 "accuracy_avg": avg_acc,
-                "f1_score_weighted_avg": avg_f1
+                "f1_score_avg": avg_f1
             }
             print(f"\n[Final Evaluation] Average Results:")
             print(f"  Average Accuracy: {avg_acc:.4f}")
